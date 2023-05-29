@@ -31,13 +31,13 @@ jobs:
       run: | 
         dotnet test src/VoucherSystem.TestsUnit --no-build --verbosity normal
     - name: Publish
-        run: |
-          dotnet publish src/VoucherSystem/VoucherSystem.csproj --configuration release --output dist
-      - uses: actions/upload-artifact@v3
-        with:
-          name: ${{ env.DIST_FOLDER }}
-          path: dist
-          if-no-files-found: error
+      run: |
+        dotnet publish src/VoucherSystem/VoucherSystem.csproj --configuration release --output dist
+    - uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.DIST_FOLDER }}
+        path: dist
+        if-no-files-found: error
 
   deploy_t:
     name: Deploy to Test environment
