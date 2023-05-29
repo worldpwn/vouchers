@@ -11,6 +11,7 @@ on:
 
 jobs:
   ci:
+    name: CI (Build, UnitTests)
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -32,6 +33,7 @@ jobs:
         dotnet test --no-build --verbosity normal
 
   deploy_t:
+    name: Deploy to Test environment
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
