@@ -52,6 +52,7 @@ jobs:
   integration_tests:
     name: Integration Tests
     runs-on: ubuntu-latest
+    needs: [deploy_t]
     steps:
     - uses: actions/checkout@v3
     - name: Setup .NET
@@ -66,7 +67,7 @@ jobs:
         dotnet build src/VoucherSystem.TestsIntegration --no-restore
     - name: IntegrationTests
       run: | 
-        URL_TO_WEB_API=voucher-sys-t.azurewebsites.net dotnet test src/VoucherSystem.TestsIntegration --no-build --verbosity normal
+        URL_TO_WEB_API=https://voucher-sys-t.azurewebsites.net dotnet test src/VoucherSystem.TestsIntegration --no-build --verbosity normal
 
   deploy_p:
     name: Deploy to Production environment
