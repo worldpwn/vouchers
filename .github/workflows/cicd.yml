@@ -60,8 +60,10 @@ jobs:
         dotnet-version: 7.0.x
     - name: Restore dependencies
       run: |
-        cd src
-        dotnet restore
+        dotnet restore src/VoucherSystem.TestsIntegration
+    - name: Build
+      run: |
+        dotnet build src/VoucherSystem.TestsIntegration --no-restore
     - name: IntegrationTests
       run: | 
         URL_TO_WEB_API=voucher-sys-t.azurewebsites.net
