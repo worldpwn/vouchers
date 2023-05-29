@@ -22,4 +22,7 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\VoucherSystem\VoucherSystem.csproj" />
+  </ItemGroup>
 </Project>
