@@ -2,12 +2,19 @@
 using System.Net.Http.Json;
 using System.Text.RegularExpressions;
 using VoucherSystem.Dtos;
+using Xunit.Abstractions;
 
 namespace VoucherSystem.TestsIntegration;
 
 public class GenerateVouchers
 {
-    Regex vaucherRegex = new("^[A-Z0-9]+$");
+    private readonly Regex vaucherRegex = new("^[A-Z0-9]+$");
+    private readonly ITestOutputHelper output;
+
+    public GenerateVouchers(ITestOutputHelper output)
+    {
+        this.output = output;
+    }
 
     [Fact]
     public async Task ShouldGenerateVouchers()
@@ -17,7 +24,14 @@ public class GenerateVouchers
     
 
         string? urlToWebApiFromEnv = Environment.GetEnvironmentVariable("URL_TO_WEB_API");
-        Uri urlToWebApi = new Uri(urlToWebApiFromEnv!);
+        if (urlToWebApiFromEnv is null)
+        {
+            urlToWebApiFromEnv = "https://localhost:7148";
+            output.WriteLine("Cannot find URL_TO_WEB_API enviornment variable");
+            output.WriteLine($"Fallback to {urlToWebApiFromEnv}");
+        }
+
+        Uri urlToWebApi = new Uri(urlToWebApiFromEnv);
 
         HttpClient client = new();
         client.BaseAddress = urlToWebApi;
