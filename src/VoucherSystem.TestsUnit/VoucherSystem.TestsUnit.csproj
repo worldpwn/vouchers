@@ -28,9 +28,11 @@
   <ItemGroup>
     <None Remove="GeneratorTests\" />
     <None Remove="Mock\" />
+    <None Remove="ValueObjectsTests\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="GeneratorTests\" />
     <Folder Include="Mock\" />
+    <Folder Include="ValueObjectsTests\" />
   </ItemGroup>
 </Project>
