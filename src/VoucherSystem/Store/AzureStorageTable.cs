@@ -7,18 +7,26 @@ namespace VoucherSystem.Store;
 
 public class AzureStorageTable
 {
+    private readonly string storageAccountName;
+    public AzureStorageTable(string storageAccountName)
+    {
+        this.storageAccountName = storageAccountName;
+    }
+
     /// <summary>
     /// Will return table based on table name. If table doesn't exist it will create one.
     /// </summary>
     public async Task<TableClient> GetTableClient(string tableName)
     {
-        string? url = Environment.GetEnvironmentVariable("STORAGE_ACCOUNT_NAME");
-        if (url is null) throw new Exception("Cannot create Table Client because environment variable STORAGE_ACCOUNT_NAME is null");
+        string connectionString = "DefaultEndpointsProtocol=https;AccountName=vouchersyst;AccountKey=Qk3EMQyPfvOi8U5G55YgUEzSMRt0XYW7uvQ66Ezc7AId7VUDCoVxFiijzSxcQLAffwx8e5/L1bT6+AStd49eTw==;EndpointSuffix=core.windows.net";
+        TableClient tableClient = new TableClient(
+                       connectionString,
+                       tableName);
 
-        var tableClient = new TableClient(
-                        new Uri("https://vouchersyst.table.core.windows.net"),
-                        tableName,
-                        new DefaultAzureCredential());
+        //TableClient tableClient = new TableClient(
+        //                new Uri($"https://{storageAccountName}.table.core.windows.net"),
+        //                tableName,
+        //                new DefaultAzureCredential());
         await tableClient.CreateIfNotExistsAsync();
         return tableClient;
     }

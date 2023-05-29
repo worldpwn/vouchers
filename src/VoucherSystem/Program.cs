@@ -16,7 +16,8 @@ builder.Services.AddSwaggerGen(o => o.EnableAnnotations());
 builder.Services.AddSingleton<IGenerateRandomSymbol, GenerateRandomSymbol>();
 builder.Services.AddScoped<GenerateVoucher>();
 builder.Services.AddScoped<VouchersApi>();
-builder.Services.AddSingleton<AzureStorageTable>();
+builder.Services.AddSingleton<AzureStorageTable>(o =>
+    new AzureStorageTable(builder.Configuration.GetValue<string>("STORAGE_ACCOUNT_NAME") ?? throw new Exception("Cannot create Table Client because variable STORAGE_ACCOUNT_NAME is null")));
 
 var app = builder.Build();
 
@@ -28,7 +29,7 @@ app.UseHttpsRedirection();
 app.MapGet("generate-vouchers/{marketingCampaignName}",
     [SwaggerOperation(
     Summary = "Generate random `vouchers`.",
-    Description = "Will generate random `vouchers` based on the needed length of the `voucher` and the number of `vouchers` needed. For `voucherLength` recommended value is 8+.")]
+    Description = "Will generate random `vouchers` based on the needed length of the `voucher` and the number of `vouchers` needed. Minimal `voucherLength` is 6.")]
 async (int voucherLength, int numberOfVouchersNeeded, string marketingCampaignName, VouchersApi vouchersApi)
 => await vouchersApi.GenerateRandomUniqueVouchers(
     marketingCampaignName: new MarketingCampaignName() { Value = marketingCampaignName },

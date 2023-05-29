@@ -22,7 +22,7 @@ public class GenerateVouchers
     public async Task ShouldGenerateVouchers()
     {
         int voucherLength = 12;
-        int numberOfVouchersNeeded = 100;
+        int numberOfVouchersNeeded = 1000;
         string marketingCampaignName = "2023SpecialOffer";
 
         string? urlToWebApiFromEnv = Environment.GetEnvironmentVariable("URL_TO_WEB_API");

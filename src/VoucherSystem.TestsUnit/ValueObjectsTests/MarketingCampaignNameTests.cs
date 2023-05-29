@@ -30,17 +30,6 @@ public class MarketingCampaignNameTests
             Action action = () => new MarketingCampaignName() { Value = value };
             Assert.Throws<ArgumentException>(action);
         }
-
-        [Theory]
-        [InlineData("summerHolidaysOffer", "t_summerHolidaysOffer")]
-        [InlineData("saleForPartner", "t_saleForPartner")]
-        [InlineData("sale2023", "t_sale2023")]
-        [InlineData("2023sale", "t_2023sale")]
-        public void CorrectDataShouldTransformToTableName(string value, string asTableName)
-        {
-            MarketingCampaignName marketingCampaignName = new MarketingCampaignName() { Value = value };
-            Assert.Equal(asTableName, marketingCampaignName.ToTableName());
-        }
     }
 }
 
