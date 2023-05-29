@@ -23,7 +23,7 @@ public class GenerateVouchers
     {
         int voucherLength = 12;
         int numberOfVouchersNeeded = 100;
-    
+        string marketingCampaignName = "2023SpecialOffer";
 
         string? urlToWebApiFromEnv = Environment.GetEnvironmentVariable("URL_TO_WEB_API");
         if (urlToWebApiFromEnv is null)
@@ -33,7 +33,7 @@ public class GenerateVouchers
             output.WriteLine($"Fallback to {urlToWebApiFromEnv}");
         }
 
-        Uri urlToWebApi = new Uri($"{urlToWebApiFromEnv}/generate-vouchers?voucherLength={voucherLength}&numberOfVouchersNeeded={numberOfVouchersNeeded}");
+        Uri urlToWebApi = new Uri($"{urlToWebApiFromEnv}/generate-vouchers/{marketingCampaignName}/?voucherLength={voucherLength}&numberOfVouchersNeeded={numberOfVouchersNeeded}");
         
         HttpClient client = new();
 
@@ -41,6 +41,7 @@ public class GenerateVouchers
 
         Assert.NotNull(response);
         Assert.Equal(numberOfVouchersNeeded, response.amount);
+        Assert.Equal(marketingCampaignName, response.marketingCampaignName);
 
         // validate vouchers
         string[] vouchersItslef = response.vouchers.Split(',');

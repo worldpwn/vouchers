@@ -4,6 +4,7 @@ using VoucherSystem.Generator;
 using Swashbuckle.AspNetCore.Annotations;
 using VoucherSystem.Apis;
 using VoucherSystem.Store;
+using VoucherSystem.ValueObjects;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,14 +23,17 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
+app.UseHttpsRedirection();  
 
-app.MapGet("generate-vouchers",
+app.MapGet("generate-vouchers/{marketingCampaignName}",
     [SwaggerOperation(
     Summary = "Generate random `vouchers`.",
     Description = "Will generate random `vouchers` based on the needed length of the `voucher` and the number of `vouchers` needed. For `voucherLength` recommended value is 8+.")]
-async (int voucherLength, int numberOfVouchersNeeded, VouchersApi vouchersApi)
-=> await vouchersApi.GenerateRandomUniqueVouchers(voucherLength: voucherLength, numberOfVouchersNeeded: numberOfVouchersNeeded))
+async (int voucherLength, int numberOfVouchersNeeded, string marketingCampaignName, VouchersApi vouchersApi)
+=> await vouchersApi.GenerateRandomUniqueVouchers(
+    marketingCampaignName: new MarketingCampaignName() { Value = marketingCampaignName },
+    voucherLength: voucherLength,
+    numberOfVouchersNeeded: numberOfVouchersNeeded))
 .WithOpenApi();
 
 app.Run();

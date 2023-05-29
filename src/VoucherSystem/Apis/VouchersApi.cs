@@ -2,6 +2,7 @@
 using VoucherSystem.Dtos;
 using VoucherSystem.Generator;
 using VoucherSystem.Store;
+using VoucherSystem.ValueObjects;
 
 namespace VoucherSystem.Apis;
 
@@ -16,10 +17,13 @@ public class VouchersApi
         this.azureStorageTable = azureStorageTable;
     }
 
-    public async Task<Vouchers> GenerateRandomUniqueVouchers(int voucherLength, int numberOfVouchersNeeded)
+    public async Task<Vouchers> GenerateRandomUniqueVouchers(MarketingCampaignName marketingCampaignName, int voucherLength, int numberOfVouchersNeeded)
 	{
         HashSet<string> generatedVouchers = generateVoucher.GenerateRandomUniqueVouchers(voucherLength, numberOfVouchersNeeded);
-        Vouchers vouchers = new Vouchers(string.Join(",", generatedVouchers), numberOfVouchersNeeded);
+        Vouchers vouchers = new Vouchers(
+            vouchers: string.Join(",", generatedVouchers),
+            marketingCampaignName: marketingCampaignName.ToString(),
+            amount: numberOfVouchersNeeded);
         return vouchers;
     }
 }
