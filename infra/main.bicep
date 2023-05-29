@@ -1,4 +1,4 @@
-param location string = resourceGroup().location
+param location string = 'eastus'
 param scaleOutLimits int = 1
 param stage string = 'a'
 param baseName string
