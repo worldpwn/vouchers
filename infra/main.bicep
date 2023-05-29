@@ -1,6 +1,6 @@
 param location string = 'eastus'
 param scaleOutLimits int = 1
-param stage string = 'a'
+param stage string
 param baseName string
 param hash string
 param repository string

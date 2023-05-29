@@ -48,6 +48,7 @@ jobs:
         --resource-group voucher-system-t 
         --template-file infra/main.bicep
         --name infra-${{github.sha}} 
+        --parameters stage=t
         --parameters baseName=voucher-sys
         --parameters hash=${{github.sha}} 
         --parameters repository=https://github.com/${{ github.repository }}
@@ -68,6 +69,7 @@ jobs:
         --resource-group voucher-system-p 
         --template-file infra/main.bicep
         --name infra-${{github.sha}} 
+        --parameters stage=p
         --parameters baseName=voucher-sys
         --parameters hash=${{github.sha}} 
         --parameters repository=https://github.com/${{ github.repository }}
