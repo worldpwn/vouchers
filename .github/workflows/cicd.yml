@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ "main" ]
 
+env:
+  DIST_FOLDER: dist
+
 jobs:
   ci:
     name: CI (Build, UnitTests)
@@ -27,6 +30,14 @@ jobs:
     - name: UnitTests
       run: | 
         dotnet test src/VoucherSystem.TestsUnit --no-build --verbosity normal
+    - name: Publish
+        run: |
+          dotnet publish src/VoucherSystem/VoucherSystem.csproj --configuration release --output dist
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.DIST_FOLDER }}
+          path: dist
+          if-no-files-found: error
 
   deploy_t:
     name: Deploy to Test environment
@@ -34,6 +45,10 @@ jobs:
     needs: [ci]
     steps:
     - uses: actions/checkout@v3
+    - uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.DIST_FOLDER }}
+          path: ${{ env.DIST_FOLDER }}
     - name: Azure Login
       uses: azure/login@v1
       with:
@@ -48,6 +63,16 @@ jobs:
         --parameters baseName=voucher-sys
         --parameters hash=${{github.sha}} 
         --parameters repository=https://github.com/${{ github.repository }}
+      - name: Zip
+        run: |
+          zip -r dist.zip ${{ env.DIST_FOLDER }} 
+      - name: Azure WebApp Deploy
+        run: >
+          az webapp deployment source config-zip 
+          --subscription bc5ef57e-1674-4d98-aa20-41f14f348235
+          --resource-group voucher-system-t
+          --name voucher-sys-t
+          --src dist.zip
 
   integration_tests:
     name: Integration Tests
