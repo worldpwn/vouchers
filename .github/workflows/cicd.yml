@@ -36,9 +36,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_SP_TEST_GROUP }}
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_SP_TEST_GROUP }}
     - name: Create environment
         run: >
           az deployment group create --resource-group voucher-system-t --template-file infra/main.bicep
