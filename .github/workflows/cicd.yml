@@ -66,8 +66,7 @@ jobs:
         dotnet build src/VoucherSystem.TestsIntegration --no-restore
     - name: IntegrationTests
       run: | 
-        URL_TO_WEB_API=voucher-sys-t.azurewebsites.net
-        dotnet test src/VoucherSystem.TestsIntegration --no-build --verbosity normal
+        URL_TO_WEB_API=voucher-sys-t.azurewebsites.net dotnet test src/VoucherSystem.TestsIntegration --no-build --verbosity normal
 
   deploy_p:
     name: Deploy to Production environment
