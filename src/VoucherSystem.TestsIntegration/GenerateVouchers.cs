@@ -1,6 +1,8 @@
 ﻿using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.RegularExpressions;
+using Microsoft.VisualStudio.TestPlatform.Utilities;
 using VoucherSystem.Dtos;
 using Xunit.Abstractions;
 
@@ -31,12 +33,11 @@ public class GenerateVouchers
             output.WriteLine($"Fallback to {urlToWebApiFromEnv}");
         }
 
-        Uri urlToWebApi = new Uri(urlToWebApiFromEnv);
-
+        Uri urlToWebApi = new Uri($"{urlToWebApiFromEnv}/generate-vouchers?voucherLength={voucherLength}&numberOfVouchersNeeded={numberOfVouchersNeeded}");
+        
         HttpClient client = new();
-        client.BaseAddress = urlToWebApi;
 
-        Vouchers? response = await client.GetFromJsonAsync<Vouchers>($"generate-vouchers?voucherLength={voucherLength}&numberOfVouchersNeeded=${numberOfVouchersNeeded}");
+        Vouchers? response = await client.GetFromJsonAsync<Vouchers>(urlToWebApi);
 
         Assert.NotNull(response);
         Assert.Equal(numberOfVouchersNeeded, response.amount);
