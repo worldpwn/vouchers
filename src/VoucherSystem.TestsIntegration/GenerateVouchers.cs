@@ -4,6 +4,7 @@ using System.Net.Http.Json;
 using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestPlatform.Utilities;
 using VoucherSystem.Dtos;
+using VoucherSystem.ValueObjects;
 using Xunit.Abstractions;
 
 namespace VoucherSystem.TestsIntegration;
@@ -25,15 +26,7 @@ public class GenerateVouchers
         int numberOfVouchersNeeded = 1000;
         string marketingCampaignName = "2023SpecialOffer";
 
-        string? urlToWebApiFromEnv = Environment.GetEnvironmentVariable("URL_TO_WEB_API");
-        if (urlToWebApiFromEnv is null)
-        {
-            urlToWebApiFromEnv = "https://localhost:7148";
-            output.WriteLine("Cannot find URL_TO_WEB_API enviornment variable");
-            output.WriteLine($"Fallback to {urlToWebApiFromEnv}");
-        }
-
-        Uri urlToWebApi = new Uri($"{urlToWebApiFromEnv}/generate-vouchers/{marketingCampaignName}/?voucherLength={voucherLength}&numberOfVouchersNeeded={numberOfVouchersNeeded}");
+        Uri urlToWebApi = new Uri($"{Config.GetUrlToWebApiFromEnv(output)}/generate-vouchers/{marketingCampaignName}/?voucherLength={voucherLength}&numberOfVouchersNeeded={numberOfVouchersNeeded}");
         
         HttpClient client = new();
 
