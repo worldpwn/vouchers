@@ -22,4 +22,15 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\VoucherSystem\VoucherSystem.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="GeneratorTests\" />
+    <None Remove="Mock\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="GeneratorTests\" />
+    <Folder Include="Mock\" />
+  </ItemGroup>
 </Project>
