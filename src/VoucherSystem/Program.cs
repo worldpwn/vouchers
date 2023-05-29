@@ -37,4 +37,14 @@ async (int voucherLength, int numberOfVouchersNeeded, string marketingCampaignNa
     numberOfVouchersNeeded: numberOfVouchersNeeded))
 .WithOpenApi();
 
+app.MapGet("voucher-status/{marketingCampaignName}/{voucher}",
+    [SwaggerOperation(
+    Summary = "Check if `voucher` is `used`, `new`, `not-valid`.",
+    Description = "Will return `voucher` status.")]
+async (string marketingCampaignName, string voucher, VouchersApi vouchersApi)
+=> await vouchersApi.GetVoucherStatus(
+    marketingCampaignName: new MarketingCampaignName() { Value = marketingCampaignName },
+    voucher: voucher))
+.WithOpenApi();
+
 app.Run();

@@ -26,11 +26,11 @@ public class GenerateVouchers
         int numberOfVouchersNeeded = 1000;
         string marketingCampaignName = "2023SpecialOffer";
 
-        Uri urlToWebApi = new Uri($"{Config.GetUrlToWebApiFromEnv(output)}/generate-vouchers/{marketingCampaignName}/?voucherLength={voucherLength}&numberOfVouchersNeeded={numberOfVouchersNeeded}");
+        Uri urlToGenerateVouchers = new Uri($"{Config.GetUrlToWebApiFromEnv(output)}/generate-vouchers/{marketingCampaignName}/?voucherLength={voucherLength}&numberOfVouchersNeeded={numberOfVouchersNeeded}");
         
         HttpClient client = new();
 
-        Vouchers? response = await client.GetFromJsonAsync<Vouchers>(urlToWebApi);
+        Vouchers? response = await client.GetFromJsonAsync<Vouchers>(urlToGenerateVouchers);
 
         Assert.NotNull(response);
         Assert.Equal(numberOfVouchersNeeded, response.amount);

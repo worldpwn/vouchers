@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Text.Json;
 using System.Transactions;
 using Azure;
 using Azure.Data.Tables;
@@ -41,10 +42,28 @@ public class VouchersApi
         return vouchers;
     }
 
+    public async Task<VoucherStatus> GetVoucherStatus(MarketingCampaignName marketingCampaignName, string voucher)
+    {
+        TableClient tableClient = await azureStorageTable.GetTableClient(voucherTableName);
+        List<JsonDocument> result = new();
+        string filter = $"PartitionKey eq '{marketingCampaignName}' and RowKey eq '{voucher}'";
+        AsyncPageable<TableEntity> queryResultsFilter = tableClient.QueryAsync<TableEntity>(filter: filter);
+        bool exist = false;
+        bool used = false;
+        await foreach (TableEntity qEntity in queryResultsFilter)
+        {
+            exist = true;
+            used = qEntity.GetBoolean("Used") ?? throw new Exception($"Entity has not Used field for filter {filter}");
+        }
+        return new VoucherStatus(exist: exist, used: used);
+    }
+
     private static async Task VoucherBatchAdd(TableClient tableClient, MarketingCampaignName marketingCampaignName, HashSet<string> vouchers)
     {
         List<Task> batchTasks = new List<Task>();
-        List<TableEntity> entityList = vouchers.Select(v => new TableEntity(marketingCampaignName.ToString(), v)).ToList();
+        List<TableEntity> entityList = vouchers.Select(v => new TableEntity(marketingCampaignName.ToString(), v)   {
+            { "Used", false },
+        }).ToList();
         for (int i = 0; i < entityList.Count; i += maximumNumberPerBatch)
         {
             IEnumerable<TableEntity> entity = entityList.Skip(i).Take(maximumNumberPerBatch);
