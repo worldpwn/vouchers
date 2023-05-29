@@ -87,6 +87,7 @@ resource appSettings 'Microsoft.Web/sites/config@2022-03-01' = {
   properties: {
     // Base Config
     APPLICATIONINSIGHTS_CONNECTION_STRING: appInsights.properties.ConnectionString
+    STORAGE_ACCOUNT_NAME: storageAccount.name
   }
 }
 
