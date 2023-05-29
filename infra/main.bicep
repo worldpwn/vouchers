@@ -74,7 +74,7 @@ resource appService 'Microsoft.Web/sites@2021-03-01' = {
       http20Enabled: true
       netFrameworkVersion: 'v7.0'
       linuxFxVersion: 'DOTNETCORE|7.0'
-      appCommandLine: 'dotnet VoucherSystem.dll'
+      appCommandLine: 'dotnet dist/VoucherSystem.dll'
       publicNetworkAccess: 'Enabled'
     }
   }
