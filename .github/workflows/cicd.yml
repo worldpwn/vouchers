@@ -35,6 +35,7 @@ jobs:
   deploy_t:
     name: Deploy to Test environment
     runs-on: ubuntu-latest
+    needs: [ci]
     steps:
     - uses: actions/checkout@v3
     - name: Azure Login
@@ -42,5 +43,11 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_SP_TEST_GROUP }}
     - name: Create environment
-      run: |
-        az deployment group create --resource-group voucher-system-t --template-file infra/main.bicep
+      run: >
+        az deployment group create 
+        --resource-group voucher-system-t 
+        --template-file infra/main.bicep
+        --name infra-${{github.sha}} 
+        --parameters baseName=voucher-sys
+        --parameters hash=${{github.sha}} 
+        --parameters repository=https://github.com/${{ github.repository }}
