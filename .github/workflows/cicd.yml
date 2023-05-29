@@ -100,6 +100,10 @@ jobs:
     needs: [integration_tests]
     steps:
     - uses: actions/checkout@v3
+    - uses: actions/download-artifact@v3
+      with:
+          name: ${{ env.DIST_FOLDER }}
+          path: ${{ env.DIST_FOLDER }}
     - name: Azure Login
       uses: azure/login@v1
       with:
@@ -114,3 +118,13 @@ jobs:
         --parameters baseName=voucher-sys
         --parameters hash=${{github.sha}} 
         --parameters repository=https://github.com/${{ github.repository }}
+    - name: Zip
+      run: |
+        zip -r dist.zip ${{ env.DIST_FOLDER }} 
+    - name: Azure WebApp Deploy
+      run: >
+        az webapp deployment source config-zip 
+        --subscription 6100849e-5c0c-4eda-adcc-d0b0e33bc8fa
+        --resource-group voucher-system-p
+        --name voucher-sys-p
+        --src dist.zip
