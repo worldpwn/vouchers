@@ -16,6 +16,7 @@ namespace VoucherSystem.ValueObjects
                 this._value = value;
             }
         }
+        public string ToTableName() => $"t_{Value}";
 
         public override string ToString() => this.Value;
     }
