@@ -20,9 +20,11 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
-app.MapGet("generate-vouchers", [SwaggerOperation(
-        Summary = "Generate random `vouchers`.",
-        Description = "Will generate random `vouchers` based on the needed length of the `voucher` and the number of `vouchers` needed.")] (int voucherLength, int numberOfVouchersNeeded, GenerateVoucher generateVoucher) =>
+app.MapGet("generate-vouchers",
+[SwaggerOperation(
+    Summary = "Generate random `vouchers`.",
+    Description = "Will generate random `vouchers` based on the needed length of the `voucher` and the number of `vouchers` needed.")]
+(int voucherLength, int numberOfVouchersNeeded, GenerateVoucher generateVoucher) =>
 {
     HashSet<string> generatedVouchers = generateVoucher.GenerateRandomUniqueVouchers(voucherLength, numberOfVouchersNeeded);
     Vouchers vouchers = new Vouchers(string.Join(",", generatedVouchers), numberOfVouchersNeeded);
