@@ -51,3 +51,23 @@ jobs:
         --parameters baseName=voucher-sys
         --parameters hash=${{github.sha}} 
         --parameters repository=https://github.com/${{ github.repository }}
+
+  deploy_p:
+    name: Deploy to Production environment
+    runs-on: ubuntu-latest
+    needs: [ci]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_SP_PROD_GROUP }}
+    - name: Create environment
+      run: >
+        az deployment group create 
+        --resource-group voucher-system-p 
+        --template-file infra/main.bicep
+        --name infra-${{github.sha}} 
+        --parameters baseName=voucher-sys
+        --parameters hash=${{github.sha}} 
+        --parameters repository=https://github.com/${{ github.repository }}
