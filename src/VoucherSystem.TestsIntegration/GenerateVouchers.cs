@@ -30,14 +30,15 @@ public class GenerateVouchers
         
         HttpClient client = new();
 
-        Vouchers? response = await client.GetFromJsonAsync<Vouchers>(urlToGenerateVouchers);
+        HttpResponseMessage? response = await client.PostAsync(urlToGenerateVouchers, null);
+        Vouchers? vouchersFromResponse = await response.Content.ReadFromJsonAsync<Vouchers>();
 
-        Assert.NotNull(response);
-        Assert.Equal(numberOfVouchersNeeded, response.amount);
-        Assert.Equal(marketingCampaignName, response.marketingCampaignName);
+        Assert.NotNull(vouchersFromResponse);
+        Assert.Equal(numberOfVouchersNeeded, vouchersFromResponse.amount);
+        Assert.Equal(marketingCampaignName, vouchersFromResponse.marketingCampaignName);
 
         // validate vouchers
-        string[] vouchersItslef = response.vouchers.Split(',');
+        string[] vouchersItslef = vouchersFromResponse.vouchers.Split(',');
         Assert.Equal(numberOfVouchersNeeded, vouchersItslef.Length);
         foreach (string voucher in vouchersItslef)
         {

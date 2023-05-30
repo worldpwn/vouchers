@@ -26,8 +26,10 @@ public class GetVoucherStatus
 
         // generate voucher
         Uri urlToGenerateVouchers = new Uri($"{Config.GetUrlToWebApiFromEnv(output)}/generate-vouchers/{marketingCampaignName}/?voucherLength={12}&numberOfVouchersNeeded={3}");
-        Vouchers? vouchers = await client.GetFromJsonAsync<Vouchers>(urlToGenerateVouchers);
-        string[] vouchersAsStrings = vouchers!.vouchers.Split(",");
+        HttpResponseMessage? responseToGenerate = await client.PostAsync(urlToGenerateVouchers, null);
+        Vouchers? vouchersFromResponse = await responseToGenerate.Content.ReadFromJsonAsync<Vouchers>();
+
+        string[] vouchersAsStrings = vouchersFromResponse!.vouchers.Split(",");
 
         string voucher = vouchersAsStrings[1];
         Uri urlToGetVoucherStatus = new Uri($"{Config.GetUrlToWebApiFromEnv(output)}/voucher-status/{marketingCampaignName}/{voucher}");

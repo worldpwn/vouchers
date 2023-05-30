@@ -26,7 +26,7 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();  
 
-app.MapGet("generate-vouchers/{marketingCampaignName}",
+app.MapPost("generate-vouchers/{marketingCampaignName}",
     [SwaggerOperation(
     Summary = "Generate random `vouchers`.",
     Description = "Will generate random `vouchers` based on the needed length of the `voucher` and the number of `vouchers` needed. Minimal `voucherLength` is 6.")]
