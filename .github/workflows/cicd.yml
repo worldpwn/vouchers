@@ -93,6 +93,10 @@ jobs:
     - name: Integration Tests
       run: | 
         URL_TO_WEB_API=https://voucher-sys-t.azurewebsites.net dotnet test src/VoucherSystem.TestsIntegration --no-build --verbosity normal
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_SP_TEST_GROUP }}
     - name: Delete Test Table
       run: |
         az storage table delete --name Vouchers --account-name vouchersyst
