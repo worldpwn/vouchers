@@ -4,6 +4,7 @@ using System.Net.Http.Json;
 using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestPlatform.Utilities;
 using VoucherSystem.Dtos;
+using VoucherSystem.TestsIntegration.HttpClients;
 using VoucherSystem.ValueObjects;
 using Xunit.Abstractions;
 
@@ -25,9 +26,7 @@ public class GetVoucherStatus
         HttpClient client = new();
 
         // generate voucher
-        Uri urlToGenerateVouchers = new Uri($"{Config.GetUrlToWebApiFromEnv(output)}/generate-vouchers/{marketingCampaignName}/?voucherLength={12}&numberOfVouchersNeeded={3}");
-        HttpResponseMessage? responseToGenerate = await client.PostAsync(urlToGenerateVouchers, null);
-        Vouchers? vouchersFromResponse = await responseToGenerate.Content.ReadFromJsonAsync<Vouchers>();
+        Vouchers? vouchersFromResponse = await GenerateVouchersClient.GenerateVoucher(output, marketingCampaignName, 12, 3);
 
         string[] vouchersAsStrings = vouchersFromResponse!.vouchers.Split(",");
 
