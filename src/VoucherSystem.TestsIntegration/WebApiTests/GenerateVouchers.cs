@@ -7,7 +7,7 @@ using VoucherSystem.Dtos;
 using VoucherSystem.ValueObjects;
 using Xunit.Abstractions;
 
-namespace VoucherSystem.TestsIntegration;
+namespace VoucherSystem.TestsIntegration.WebApiTests;
 
 public class GenerateVouchers
 {
