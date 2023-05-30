@@ -27,8 +27,10 @@ public class GenerateVouchers
         int numberOfVouchersNeeded = 1000;
         string marketingCampaignName = "2023SpecialOffer";
 
+        // Act
         Vouchers? vouchersFromResponse = await GenerateVouchersClient.GenerateVoucher(output, marketingCampaignName, voucherLength, numberOfVouchersNeeded);
 
+        // Assert
         Assert.NotNull(vouchersFromResponse);
         Assert.Equal(numberOfVouchersNeeded, vouchersFromResponse.amount);
         Assert.Equal(marketingCampaignName, vouchersFromResponse.marketingCampaignName);

@@ -5,6 +5,10 @@ using Swashbuckle.AspNetCore.Annotations;
 using VoucherSystem.Apis;
 using VoucherSystem.Store;
 using VoucherSystem.ValueObjects;
+using Azure;
+using System.Net;
+using VoucherSystem.Exceptions;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,4 +51,32 @@ async (string marketingCampaignName, string voucher, VouchersApi vouchersApi)
     voucher: voucher))
 .WithOpenApi();
 
+app.MapPut("use-voucher/{marketingCampaignName}/{voucher}",
+    [SwaggerOperation(
+    Summary = "Will use `voucher`.",
+    Description = "Will set `used` variable to true. If voucher doesnt exist and if the voucher is already used will return Error")]
+async (string marketingCampaignName, string voucher, VouchersApi vouchersApi)
+=> await UseVoucher(marketingCampaignName, voucher, vouchersApi))
+.WithOpenApi();
+
+
 app.Run();
+
+static async Task<IResult> UseVoucher(string marketingCampaignName, string voucher, VouchersApi vouchersApi)
+{
+    try
+    {
+        VoucherStatus voucherStatus = await vouchersApi.UseVoucher(
+            marketingCampaignName: new MarketingCampaignName() { Value = marketingCampaignName },
+            voucher: voucher);
+        return Results.Ok(voucherStatus);
+    }
+    catch (VoucherDoesntExistException ex)
+    {
+        return Results.BadRequest(ex.Message);
+    }
+    catch (VoucherUsedException ex)
+    {
+        return Results.BadRequest(ex.Message);
+    }
+}

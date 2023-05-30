@@ -23,16 +23,16 @@ public class GetVoucherStatus
     public async Task ShouldGetStatusForExistentVoucher()
     {
         string marketingCampaignName = "2023SpecialOffer";
-        HttpClient client = new();
 
         // generate voucher
         Vouchers? vouchersFromResponse = await GenerateVouchersClient.GenerateVoucher(output, marketingCampaignName, 12, 3);
-
         string[] vouchersAsStrings = vouchersFromResponse!.vouchers.Split(",");
-
         string voucher = vouchersAsStrings[1];
+
+        // Act
         VoucherStatus? response = await GetVoucherStatusClient.GetVoucherStatus(output, marketingCampaignName, voucher);
 
+        // Assert
         Assert.NotNull(response);
         Assert.True(response.exist);
         Assert.False(response.used);
@@ -44,10 +44,11 @@ public class GetVoucherStatus
         string marketingCampaignName = "2023SpecialOfferNonExist";
         string voucher = "LALAL1231";
         Uri urlToGetVoucherStatus = new Uri($"{Config.GetUrlToWebApiFromEnv(output)}/voucher-status/{marketingCampaignName}/{voucher}");
-        HttpClient client = new();
 
+        // Act
         VoucherStatus? response = await GetVoucherStatusClient.GetVoucherStatus(output, marketingCampaignName, voucher);
 
+        // Assert
         Assert.NotNull(response);
         Assert.False(response.exist);
         Assert.False(response.used);

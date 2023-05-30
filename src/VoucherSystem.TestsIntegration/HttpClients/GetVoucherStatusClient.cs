@@ -11,9 +11,9 @@ public static class GetVoucherStatusClient
 
     public static async Task<VoucherStatus> GetVoucherStatus(ITestOutputHelper output, string marketingCampaignName, string voucher)
     {
-        Uri urlToGetVoucherStatus = new Uri($"{Config.GetUrlToWebApiFromEnv(output)}/voucher-status/{marketingCampaignName}/{voucher}");
-        VoucherStatus? response = await client.GetFromJsonAsync<VoucherStatus>(urlToGetVoucherStatus);
-        if (response is null) throw new Exception($"Voucher is null from {urlToGetVoucherStatus}");
+        Uri url = new Uri($"{Config.GetUrlToWebApiFromEnv(output)}/voucher-status/{marketingCampaignName}/{voucher}");
+        VoucherStatus? response = await client.GetFromJsonAsync<VoucherStatus>(url);
+        if (response is null) throw new Exception($"Voucher is null from {url}");
         return response;
     }
 }

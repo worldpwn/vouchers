@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Net;
 using System.Text.Json;
 using System.Transactions;
 using Azure;
 using Azure.Data.Tables;
 using VoucherSystem.Dtos;
+using VoucherSystem.Exceptions;
 using VoucherSystem.Generator;
 using VoucherSystem.Store;
 using VoucherSystem.ValueObjects;
@@ -56,6 +58,23 @@ public class VouchersApi
             used = qEntity.GetBoolean("Used") ?? throw new Exception($"Entity has not Used field for filter {filter}");
         }
         return new VoucherStatus(exist: exist, used: used);
+    }
+
+    public async Task<VoucherStatus> UseVoucher(MarketingCampaignName marketingCampaignName, string voucher)
+    {
+        try
+        {
+            TableClient tableClient = await azureStorageTable.GetTableClient(voucherTableName);
+            Response<TableEntity> responseEntry = await tableClient.GetEntityAsync<TableEntity>(marketingCampaignName.ToString(), voucher);
+            if (responseEntry.Value.GetBoolean("Used") ?? true) throw new VoucherUsedException(voucher);
+            responseEntry.Value["Used"] = true;
+            await tableClient.UpdateEntityAsync(responseEntry.Value, responseEntry.Value.ETag);
+            return new VoucherStatus(exist: true, used: true);
+        }
+        catch(RequestFailedException ex) when (ex.Status == ((int)HttpStatusCode.NotFound))
+        {
+            throw new VoucherDoesntExistException(voucher);
+        }
     }
 
     private static async Task VoucherBatchAdd(TableClient tableClient, MarketingCampaignName marketingCampaignName, HashSet<string> vouchers)
