@@ -31,8 +31,7 @@ public class GetVoucherStatus
         string[] vouchersAsStrings = vouchersFromResponse!.vouchers.Split(",");
 
         string voucher = vouchersAsStrings[1];
-        Uri urlToGetVoucherStatus = new Uri($"{Config.GetUrlToWebApiFromEnv(output)}/voucher-status/{marketingCampaignName}/{voucher}");
-        VoucherStatus? response = await client.GetFromJsonAsync<VoucherStatus>(urlToGetVoucherStatus);
+        VoucherStatus? response = await GetVoucherStatusClient.GetVoucherStatus(output, marketingCampaignName, voucher);
 
         Assert.NotNull(response);
         Assert.True(response.exist);
@@ -47,7 +46,7 @@ public class GetVoucherStatus
         Uri urlToGetVoucherStatus = new Uri($"{Config.GetUrlToWebApiFromEnv(output)}/voucher-status/{marketingCampaignName}/{voucher}");
         HttpClient client = new();
 
-        VoucherStatus? response = await client.GetFromJsonAsync<VoucherStatus>(urlToGetVoucherStatus);
+        VoucherStatus? response = await GetVoucherStatusClient.GetVoucherStatus(output, marketingCampaignName, voucher);
 
         Assert.NotNull(response);
         Assert.False(response.exist);

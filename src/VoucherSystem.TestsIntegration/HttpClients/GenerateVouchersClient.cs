@@ -9,11 +9,11 @@ namespace VoucherSystem.TestsIntegration.HttpClients;
 
 public static class GenerateVouchersClient
 {
+    private static HttpClient client = StaticHttpClient.shared;
+
     public static async Task<Vouchers> GenerateVoucher(ITestOutputHelper output, string marketingCampaignName, int voucherLength, int numberOfVouchersNeeded)
     {
         Uri urlToGenerateVouchers = new Uri($"{Config.GetUrlToWebApiFromEnv(output)}/generate-vouchers/{marketingCampaignName}/?voucherLength={voucherLength}&numberOfVouchersNeeded={numberOfVouchersNeeded}");
-        HttpClient client = new();
-
         HttpResponseMessage? response = await client.PostAsync(urlToGenerateVouchers, null);
         response.EnsureSuccessStatusCode();
         Vouchers? vouchersFromResponse = await response.Content.ReadFromJsonAsync<Vouchers>();
