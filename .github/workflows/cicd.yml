@@ -90,9 +90,12 @@ jobs:
     - name: Build
       run: |
         dotnet build src/VoucherSystem.TestsIntegration --no-restore
-    - name: IntegrationTests
+    - name: Integration Tests
       run: | 
         URL_TO_WEB_API=https://voucher-sys-t.azurewebsites.net dotnet test src/VoucherSystem.TestsIntegration --no-build --verbosity normal
+    - name: Delete Test Table
+      run: |
+        az storage table delete --name Vouchers --account-name vouchersyst
 
   deploy_p:
     name: Deploy to Production environment
